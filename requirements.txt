@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic[email]
+email-validator
+python-dotenv
+groq
+google-play-scraper
+langdetect
+emoji
+gunicorn

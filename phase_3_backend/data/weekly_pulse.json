@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "generated_at": "09 March 2026",
+    "report_period": "09 March 2026"
+  },
+  "all_themes": [
+    "Trading Experience Issues",
+    "Customer Support",
+    "App Performance and Bugs",
+    "Charges and Fees",
+    "Account Management"
+  ],
+  "weekly_note": {
+    "top_3_themes": [
+      "Trading Experience Issues",
+      "Customer Support",
+      "App Performance and Bugs"
+    ],
+    "user_quotes": [
+      "On the listing day, the stock was not visible on the Groww app for around 10 minutes after it went live on the exchange.",
+      "Even target price cross, target not triggered in intra day trading in groww platform.",
+      "Talking to customer support is a very difficult task. I waited for 15 minutes but still couldn't connect to one of them."
+    ],
+    "action_ideas": [
+      "Improve app performance and fix bugs to prevent trade execution issues",
+      "Enhance customer support by increasing response time and providing effective solutions",
+      "Implement features to prevent losses due to app glitches, such as setting stop-loss orders"
+    ],
+    "summary": "The top themes this week include trading experience issues, poor customer support, and app performance problems, resulting in significant losses and frustration for users. To address these concerns, we need to focus on improving app performance, enhancing customer support, and implementing features to prevent losses due to app glitches."
+  }
+}

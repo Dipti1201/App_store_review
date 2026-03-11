@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groww Weekly Pulse | Product Health</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --groww-green: #00d09c;
+            --groww-dark: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --error: #ef4444;
+            --accent: #38bdf8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Navbar / Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--groww-green);
+        }
+
+        .tagline {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Glass Cards */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Pulse Summary Wall */
+        .summary-wall {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .theme-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            background: rgba(0, 208, 156, 0.1);
+            color: var(--groww-green);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 208, 156, 0.2);
+        }
+
+        .quotes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .quote-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--error);
+            padding: 1rem 1.5rem;
+            font-style: italic;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .action-ideas {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .action-item i {
+            color: var(--accent);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Side Panel: Actions */
+        .action-center {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--groww-green);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn {
+            background: var(--groww-green);
+            color: var(--groww-dark);
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 208, 156, 0.2);
+            filter: brightness(1.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loader & Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse-loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid var(--groww-green);
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b, #334155, #1e293b);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            height: 20px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        #notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            background: var(--groww-green);
+            color: var(--groww-dark);
+            font-weight: 600;
+            transform: translateY(100px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        #notification.show {
+            transform: translateY(0);
+        }
+
+        #notification.error {
+            background: var(--error);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="notification">Email Sent!</div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i data-lucide="zap"></i>
+                Groww Weekly Pulse
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span id="pulse-date" class="tagline"
+                    style="background: rgba(0, 208, 156, 0.1); color: var(--groww-green); border-color: rgba(0, 208, 156, 0.2); font-weight: 600;">Loading...</span>
+                <div class="tagline">Data-driven Product Insights</div>
+            </div>
+        </header>
+
+        <main class="dashboard">
+            <!-- Left Side: Insights -->
+            <div class="summary-wall">
+                <div class="card" style="animation-delay: 0.1s;">
+                    <div class="card-title" style="justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 12px;">
+                            <i data-lucide="activity"></i>
+                            Critical Health Summary
+                        </span>
+                        <span id="report-period"
+                            style="font-size: 0.75rem; color: var(--text-dim); font-weight: 400;"></span>
+                    </div>
+                    <div id="executive-summary" class="skeleton-group">
+                        <div class="skeleton" style="width: 100%;"></div>
+                        <div class="skeleton" style="width: 90%;"></div>
+                        <div class="skeleton" style="width: 95%;"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="animation-delay: 0.2s;">
+                    <div class="card-title" style="margin-bottom: 2rem;">
+                        <i data-lucide="alert-triangle" style="color: var(--error);"></i>
+                        Top 3 Friction Themes
+                    </div>
+                    <div id="themes-wall" class="theme-chips">
+                        <!-- Chips go here -->
+                        <div class="skeleton" style="width: 80px; height: 32px; border-radius: 12px;"></div>
+                        <div class="skeleton" style="width: 100px; height: 32px; border-radius: 12px;"></div>
+                        <div class="skeleton" style="width: 90px; height: 32px; border-radius: 12px;"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="animation-delay: 0.3s;">
+                    <div class="card-title">
+                        <i data-lucide="message-square"></i>
+                        Negative User Voices
+                    </div>
+                    <div id="quotes-wall" class="quotes-container">
+                        <div class="skeleton" style="height: 60px;"></div>
+                        <div class="skeleton" style="height: 60px;"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="animation-delay: 0.4s;">
+                    <div class="card-title">
+                        <i data-lucide="lightbulb" style="color: var(--accent);"></i>
+                        Fix-Oriented Priority Actions
+                    </div>
+                    <div id="actions-wall">
+                        <div class="skeleton" style="height: 40px; margin-bottom: 12px;"></div>
+                        <div class="skeleton" style="height: 40px; margin-bottom: 12px;"></div>
+                        <div class="skeleton" style="height: 40px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Interaction -->
+            <div class="action-center">
+                <div class="card" style="animation-delay: 0.5s;">
+                    <div class="card-title">
+                        <i data-lucide="mail"></i>
+                        Distribute Pulse
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem;">
+                        Send this weeks critical report to a stakeholder instantly.
+                    </p>
+                    <div class="input-group">
+                        <label>Receiver Email Address</label>
+                        <input type="email" id="receiver-email" placeholder="stakeholder@company.com">
+                    </div>
+                    <button id="send-btn" class="btn" style="margin-top: 1.5rem;">
+                        <i data-lucide="send"></i>
+                        Send Pulse Note
+                    </button>
+                    <p style="font-size: 0.7rem; color: var(--text-dim); text-align: center; margin-top: 1rem;">
+                        Sender: dhuratdipti@gmail.com
+                    </p>
+                </div>
+
+                <div class="card" style="animation-delay: 0.6s;">
+                    <div class="card-title">
+                        <i data-lucide="refresh-cw"></i>
+                        Data Controls
+                    </div>
+                    <button id="refresh-data-btn" class="btn"
+                        style="background: var(--glass); color: white; border: 1px solid var(--glass-border);">
+                        <i data-lucide="database"></i>
+                        Re-run Analysis
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const API_BASE = "";
+        const notify = (msg, isError = false) => {
+            const el = document.getElementById('notification');
+            el.textContent = msg;
+            el.className = isError ? 'error show' : 'show';
+            setTimeout(() => el.classList.remove('show'), 3000);
+        };
+
+        // Fetch Pulse from API
+        async function fetchPulse() {
+            try {
+                const response = await fetch(`${API_BASE}/pulse`);
+                if (!response.ok) throw new Error("Pulse data not found");
+                const data = await response.json();
+                renderPulse(data);
+            } catch (err) {
+                console.error(err);
+                notify("Failed to load pulse data", true);
+            }
+        }
+
+        function renderPulse(data) {
+            const note = data.weekly_note;
+            const metadata = data.metadata || { generated_at: "N/A", report_period: "N/A" };
+
+            // Metadata
+            document.getElementById('pulse-date').textContent = metadata.generated_at;
+            document.getElementById('report-period').textContent = `Report Week: ${metadata.report_period}`;
+
+            // Summary
+            document.getElementById('executive-summary').innerHTML = `<p style="line-height: 1.6; font-size: 1.05rem;">${note.summary}</p>`;
+
+            // Themes
+            document.getElementById('themes-wall').innerHTML = note.top_3_themes.map(t => `<span class="chip">${t}</span>`).join('');
+
+            // Quotes
+            document.getElementById('quotes-wall').innerHTML = note.user_quotes.map(q => `
+                <div class="quote-box">
+                    " ${q} "
+                </div>
+            `).join('');
+
+            // Actions
+            document.getElementById('actions-wall').innerHTML = `
+                <ul class="action-ideas">
+                    ${note.action_ideas.map(i => `
+                        <li class="action-item">
+                            <i data-lucide="check-circle" size="18"></i>
+                            ${i}
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+            lucide.createIcons();
+        }
+
+        // Send Email
+        document.getElementById('send-btn').addEventListener('click', async () => {
+            const email = document.getElementById('receiver-email').value;
+            if (!email) return notify("Please enter an email", true);
+
+            const btn = document.getElementById('send-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="pulse-loader"></span> Sending...`;
+
+            try {
+                const response = await fetch(`${API_BASE}/send-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ receiver_email: email })
+                });
+
+                if (response.ok) {
+                    notify("Pulse Email Sent Successfully! 🚀");
+                } else {
+                    const err = await response.json();
+                    notify(err.detail || "Failed to send email", true);
+                }
+            } catch (err) {
+                notify("API Connection Error", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="send"></i> Send Pulse Note`;
+                lucide.createIcons();
+            }
+        });
+
+        // Refresh Data
+        document.getElementById('refresh-data-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('refresh-data-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="pulse-loader"></span> Processing...`;
+            notify("Starting full analysis pipeline (8-12 weeks)... this may take a minute.");
+
+            try {
+                const response = await fetch(`${API_BASE}/refresh`, { method: 'POST' });
+                if (response.ok) {
+                    notify("Analysis Complete! Refreshing dashboard...");
+                    await fetchPulse();
+                } else {
+                    notify("Pipeline failed. Check backend logs.", true);
+                }
+            } catch (err) {
+                notify("Failed to connect to backend", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="database"></i> Re-run Analysis`;
+                lucide.createIcons();
+            }
+        });
+
+        // Initialize
+        fetchPulse();
+
+    </script>
+</body>
+
+</html>
