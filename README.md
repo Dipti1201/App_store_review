@@ -48,6 +48,7 @@ This tool identifies core friction points in the Groww app by specifically analy
    ```
 
 ### 3. Running the System
+#### Option A: Local (FastAPI)
 1. **Start the Backend**:
    ```bash
    cd phase_3_backend
@@ -55,6 +56,15 @@ This tool identifies core friction points in the Groww app by specifically analy
    ```
 2. **Access the Dashboard**:
    Open `http://localhost:8000` in your browser.
+
+#### Option B: Streamlit Cloud (Hosting)
+1. Connect this repo to [Streamlit Cloud](https://share.streamlit.io/).
+2. Set the Main File Path to `streamlit_app.py`.
+3. Add your secrets in the Streamlit Dashboard (Advanced Settings > Secrets):
+   ```toml
+   GROQ_API_KEY = "your_key"
+   EMAIL_APP_PASSWORD = "your_app_password"
+   ```
 
 ---
 

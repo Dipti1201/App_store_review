@@ -8,3 +8,4 @@ google-play-scraper
 langdetect
 emoji
 gunicorn
+streamlit
