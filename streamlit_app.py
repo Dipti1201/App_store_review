@@ -5,6 +5,7 @@ import subprocess
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import sys
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
@@ -90,9 +91,28 @@ def run_refresh():
         cleaner_path = os.path.join(BASE_DIR, "phase_1_ingestion", "cleaner.py")
         analyzer_path = os.path.join(BASE_DIR, "phase_2_analysis", "analyzer.py")
         
-        subprocess.run(["python", scraper_path], check=True)
-        subprocess.run(["python", cleaner_path], check=True)
-        subprocess.run(["python", analyzer_path], check=True)
+        # Merge system env with streamlit secrets for the subprocess
+        env = os.environ.copy()
+        if GROQ_API_KEY:
+            env["GROQ_API_KEY"] = GROQ_API_KEY
+        if EMAIL_APP_PASSWORD:
+            env["EMAIL_APP_PASSWORD"] = EMAIL_APP_PASSWORD
+
+        # 1. Scrape
+        result = subprocess.run([sys.executable, scraper_path], env=env, capture_output=True, text=True)
+        if result.returncode != 0:
+            return False, f"Scraper Error: {result.stderr}"
+
+        # 2. Clean
+        result = subprocess.run([sys.executable, cleaner_path], env=env, capture_output=True, text=True)
+        if result.returncode != 0:
+            return False, f"Cleaner Error: {result.stderr}"
+
+        # 3. Analyze
+        result = subprocess.run([sys.executable, analyzer_path], env=env, capture_output=True, text=True)
+        if result.returncode != 0:
+            return False, f"Analyzer Error: {result.stderr}"
+
         return True, "Pipeline refreshed successfully!"
     except Exception as e:
         return False, str(e)
