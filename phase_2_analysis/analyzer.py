@@ -8,7 +8,9 @@ from groq import Groq
 load_dotenv()
 
 # Paths
-DATA_DIR = os.path.join(os.getcwd(), 'data')
+# Paths
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 INPUT_FILE = os.path.join(DATA_DIR, 'cleaned_reviews.json')
 OUTPUT_FILE = os.path.join(DATA_DIR, 'weekly_pulse.json')
 

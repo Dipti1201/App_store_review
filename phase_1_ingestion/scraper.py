@@ -6,7 +6,9 @@ from google_play_scraper import Sort, reviews
 # Application settings
 APP_ID = 'com.nextbillion.groww'
 WEEKS_LOOKBACK = 12
-DATA_DIR = os.path.join(os.getcwd(), 'data')
+# Paths
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 OUTPUT_FILE = os.path.join(DATA_DIR, 'raw_reviews.json')
 
 def fetch_groww_reviews():

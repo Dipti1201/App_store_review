@@ -8,7 +8,9 @@ from langdetect import detect, DetectorFactory
 DetectorFactory.seed = 0
 
 # Paths
-DATA_DIR = os.path.join(os.getcwd(), 'data')
+# Paths
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 INPUT_FILE = os.path.join(DATA_DIR, 'raw_reviews.json')
 OUTPUT_FILE = os.path.join(DATA_DIR, 'cleaned_reviews.json')
 
