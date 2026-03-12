@@ -26,11 +26,17 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 PULSE_FILE = os.path.join(DATA_DIR, "weekly_pulse.json")
 HTML_TEMPLATE = os.path.join(BASE_DIR, "phase_4_frontend", "index.html")
 
-def get_pulse_data():
-    if os.path.exists(PULSE_FILE):
-        with open(PULSE_FILE, "r", encoding="utf-8") as f:
+@st.cache_data
+def get_pulse_data(file_path):
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     return None
+
+@st.cache_data
+def load_html_template(template_path):
+    with open(template_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 def send_pulse_email(receiver_email, data):
     if not EMAIL_APP_PASSWORD:
@@ -126,7 +132,7 @@ st.sidebar.markdown("Use these controls to manage the Weekly Pulse report.")
 # Email Input
 receiver = st.sidebar.text_input("Distribute to Email", placeholder="stakeholder@company.com")
 if st.sidebar.button("🚀 Send Pulse Note"):
-    pulse_data = get_pulse_data()
+    pulse_data = get_pulse_data(PULSE_FILE)
     if not pulse_data:
         st.sidebar.error("No pulse data available to send.")
     elif not receiver:
@@ -147,17 +153,17 @@ if st.sidebar.button("🔄 Re-run Analysis"):
         success, msg = run_refresh()
         if success:
             st.sidebar.success(msg)
+            st.cache_data.clear() # Clear cache to show new data
             st.rerun()
         else:
             st.sidebar.error(f"Error: {msg}")
 
 # Main Display with Custom UI
-pulse_data = get_pulse_data()
+pulse_data = get_pulse_data(PULSE_FILE)
 
 if pulse_data:
     # Prepare HTML by injecting JSON data
-    with open(HTML_TEMPLATE, "r", encoding="utf-8") as f:
-        html_code = f.read()
+    html_code = load_html_template(HTML_TEMPLATE)
     
     # Inject data into a JS variable so the HTML can pick it up without a fetch call
     data_injection = f"<script>window.PULSE_DATA = {json.dumps(pulse_data)};</script>"
