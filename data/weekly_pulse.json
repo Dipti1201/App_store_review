@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "generated_at": "09 March 2026",
+    "report_period": "09 March 2026"
+  },
+  "all_themes": [
+    "Trading Experience Issues",
+    "Customer Support Problems",
+    "App Performance and Bugs",
+    "Transparency and Hidden Charges",
+    "Account and Security Issues"
+  ],
+  "weekly_note": {
+    "top_3_themes": [
+      "Trading Experience Issues",
+      "Customer Support Problems",
+      "App Performance and Bugs"
+    ],
+    "user_quotes": [
+      "On the listing day, the stock was not visible on the Groww app for around 10 minutes after it went live on the exchange.",
+      "I request everyone to use a different app.. because this apps customer support is completely unusable.. they don't receive call and if they receive by any chance they just cut the call after listening your problem",
+      "The app is constantly lagging and freezing. Moreover, my data keeps disappearing or getting hidden automatically."
+    ],
+    "action_ideas": [
+      "Optimize app performance to prevent delays in trading, especially during critical market events",
+      "Hire more customer support staff and improve response times to resolve issues promptly",
+      "Conduct thorough testing to identify and fix bugs, ensuring a seamless user experience"
+    ],
+    "summary": "Users are experiencing significant frustration due to trading experience issues, poor customer support, and app performance problems. Resolving these pain points is crucial to improve user satisfaction and retention."
+  }
+}

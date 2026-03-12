@@ -13,10 +13,8 @@ dist/
 *.egg-info/
 
 # Data (Sensitive or Large)
-data/raw_reviews.json
-data/cleaned_reviews.json
-# We keep weekly_pulse.json as a sample if needed, but usually it's better to ignore generated data
 data/*.json
+!data/weekly_pulse.json
 
 # Node / Frontend
 node_modules/

@@ -439,6 +439,13 @@
 
         // Fetch Pulse from API
         async function fetchPulse() {
+            // Check for injected data (Streamlit or Hybrid)
+            if (window.PULSE_DATA) {
+                console.log("Using injected Pulse data...");
+                renderPulse(window.PULSE_DATA);
+                return;
+            }
+
             try {
                 const response = await fetch(`${API_BASE}/pulse`);
                 if (!response.ok) throw new Error("Pulse data not found");

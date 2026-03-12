@@ -26,8 +26,8 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 PULSE_FILE = os.path.join(DATA_DIR, "weekly_pulse.json")
 HTML_TEMPLATE = os.path.join(BASE_DIR, "phase_4_frontend", "index.html")
 
-@st.cache_data
 def get_pulse_data(file_path):
+    # No cache here for now to ensure we see fresh disk changes
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -92,40 +92,28 @@ def send_pulse_email(receiver_email, data):
         return False, str(e)
 
 def run_refresh():
+    st.cache_data.clear() # Clear all caches when starting refresh
     try:
+        # (scraper paths etc remain same)
         scraper_path = os.path.join(BASE_DIR, "phase_1_ingestion", "scraper.py")
         cleaner_path = os.path.join(BASE_DIR, "phase_1_ingestion", "cleaner.py")
         analyzer_path = os.path.join(BASE_DIR, "phase_2_analysis", "analyzer.py")
         
-        # Merge system env with streamlit secrets for the subprocess
         env = os.environ.copy()
-        if GROQ_API_KEY:
-            env["GROQ_API_KEY"] = GROQ_API_KEY
-        if EMAIL_APP_PASSWORD:
-            env["EMAIL_APP_PASSWORD"] = EMAIL_APP_PASSWORD
+        if GROQ_API_KEY: env["GROQ_API_KEY"] = GROQ_API_KEY
+        if EMAIL_APP_PASSWORD: env["EMAIL_APP_PASSWORD"] = EMAIL_APP_PASSWORD
 
-        # 1. Scrape
-        result = subprocess.run([sys.executable, scraper_path], env=env, capture_output=True, text=True)
-        if result.returncode != 0:
-            return False, f"Scraper Error: {result.stderr}"
-
-        # 2. Clean
-        result = subprocess.run([sys.executable, cleaner_path], env=env, capture_output=True, text=True)
-        if result.returncode != 0:
-            return False, f"Cleaner Error: {result.stderr}"
-
-        # 3. Analyze
-        result = subprocess.run([sys.executable, analyzer_path], env=env, capture_output=True, text=True)
-        if result.returncode != 0:
-            return False, f"Analyzer Error: {result.stderr}"
+        # Run pipeline
+        for script in [scraper_path, cleaner_path, analyzer_path]:
+            res = subprocess.run([sys.executable, script], env=env, capture_output=True, text=True)
+            if res.returncode != 0:
+                return False, f"Error in {os.path.basename(script)}: {res.stderr}"
 
         return True, "Pipeline refreshed successfully!"
     except Exception as e:
         return False, str(e)
 
 # --- UI LOGIC ---
-
-# Custom Sidebar for Controls
 st.sidebar.title("🛠️ Actions")
 st.sidebar.markdown("Use these controls to manage the Weekly Pulse report.")
 
@@ -134,55 +122,39 @@ receiver = st.sidebar.text_input("Distribute to Email", placeholder="stakeholder
 if st.sidebar.button("🚀 Send Pulse Note"):
     pulse_data = get_pulse_data(PULSE_FILE)
     if not pulse_data:
-        st.sidebar.error("No pulse data available to send.")
-    elif not receiver:
-        st.sidebar.warning("Please enter a receiver email.")
+        st.sidebar.error("No pulse data available.")
     else:
-        with st.sidebar.spinner("Sending email..."):
+        with st.sidebar.spinner("Sending..."):
             success, msg = send_pulse_email(receiver, pulse_data)
-            if success:
-                st.sidebar.success(msg)
-            else:
-                st.sidebar.error(f"Failed: {msg}")
+            if success: st.sidebar.success(msg)
+            else: st.sidebar.error(msg)
 
 st.sidebar.markdown("---")
 
 # Refresh Button
 if st.sidebar.button("🔄 Re-run Analysis"):
-    with st.sidebar.spinner("Re-running 12-week analysis... this takes a minute."):
+    with st.sidebar.spinner("Analyzing 12 weeks of data..."):
         success, msg = run_refresh()
         if success:
             st.sidebar.success(msg)
-            st.cache_data.clear() # Clear cache to show new data
             st.rerun()
         else:
-            st.sidebar.error(f"Error: {msg}")
+            st.sidebar.error(msg)
 
-# Main Display with Custom UI
+# Main Display
 pulse_data = get_pulse_data(PULSE_FILE)
 
 if pulse_data:
-    # Prepare HTML by injecting JSON data
     html_code = load_html_template(HTML_TEMPLATE)
     
-    # Inject data into a JS variable so the HTML can pick it up without a fetch call
+    # Simple data injection
     data_injection = f"<script>window.PULSE_DATA = {json.dumps(pulse_data)};</script>"
     
-    # Simple modification to index.html to use PULSE_DATA instead of fetching
-    # We replace the fetchPulse call with immediate rendering
-    modified_html = html_code.replace(
-        "fetchPulse();", 
-        "if(window.PULSE_DATA) renderPulse(window.PULSE_DATA);"
-    ).replace(
-        "</head>",
-        f"{data_injection}</head>"
-    )
-    
-    # Also hide the "Distribute Pulse" and "Data Controls" sections from HTML as they are now in the sidebar
-    # We can do this with CSS injection
+    # Hide the Sidebar/Actions in the HTML component since they are in Streamlit sidebar
     css_hide = "<style>.action-center { display: none !important; } .dashboard { grid-template-columns: 1fr !important; }</style>"
-    modified_html = modified_html.replace("</head>", f"{css_hide}</head>")
-
-    st.components.v1.html(modified_html, height=1000, scrolling=True)
+    
+    final_html = html_code.replace("<body>", f"<body>{data_injection}{css_hide}")
+    st.components.v1.html(final_html, height=1200, scrolling=True)
 else:
-    st.error("No Pulse data found. Please run the analysis first from the sidebar.")
+    st.info("👋 Welcome! No pulse data found yet.")
+    st.warning("Please click **'Re-run Analysis'** in the sidebar to generate the first report.")
