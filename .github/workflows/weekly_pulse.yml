@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/checkout@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -26,18 +26,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Phase 1: Ingestion (Scrape & Clean)
+      - name: "Run Phase 1: Ingestion (Scrape & Clean)"
         run: |
           python phase_1_ingestion/scraper.py
           python phase_1_ingestion/cleaner.py
 
-      - name: Run Phase 2: Analysis & Generation
+      - name: "Run Phase 2: Analysis & Generation"
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           python phase_2_analysis/analyzer.py
 
-      - name: Send Automated Weekly Email
+      - name: "Send Automated Weekly Email"
         env:
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
         run: |
@@ -46,7 +46,7 @@ jobs:
       - name: Commit and Push Updated Pulse Data
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🤖 [Automated] Weekly Pulse Update for Monday (${{ github.event.head_commit.timestamp }})"
+          commit_message: "🤖 [Automated] Weekly Pulse Update (Run #${{ github.run_id }})"
           file_pattern: 'data/weekly_pulse.json'
           commit_user_name: "Weekly Pulse Bot"
           commit_user_email: "actions@github.com"
